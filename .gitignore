@@ -1,0 +1,103 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Logs
+*.log
+preprocessing_log_*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+
+# Ignore preprocessed pickles / caches (reproducible from scripts/notebooks)
+outputs/preprocessed/
+outputs/preprocessed/*
+
+# Ignore outputs directory by default but allow committing the human-readable
+# model summaries and reports in outputs/models/ (we unignore specific files below).
+
+
+# Allow text reports, JSON comparison files, and small plots in outputs/models
+!outputs/models/model_report.md
+!outputs/models/*.md
+!outputs/models/*.txt
+!outputs/models/*.json
+!outputs/models/*.png
+!outputs/models/*.svg
+
+# If you prefer to keep plots out of the repo, comment out the png/svg allow-lines above.
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+
+# Data files
+data/*.csv
+!data/alzheimer_dataset.csv   # keep main dataset
+
+
+
+# VSCode settings
+.vscode/
