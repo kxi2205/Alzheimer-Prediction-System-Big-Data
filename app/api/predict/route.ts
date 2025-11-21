@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     // Call Python prediction script
     const pythonScriptPath = path.join(process.cwd(), 'api', 'python', 'predict.py')
-    const pythonExecutable = path.join(process.cwd(), '.venv', 'Scripts', 'python.exe')
+    const pythonExecutable = 'C:/Users/Sana/AppData/Local/Programs/Python/Python312/python.exe'
     
     const result = await new Promise((resolve, reject) => {
       const pythonProcess = spawn(pythonExecutable, [pythonScriptPath], {

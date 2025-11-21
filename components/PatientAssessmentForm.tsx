@@ -64,7 +64,7 @@ const STORAGE_KEY = 'alzheimer-assessment-form'
 const PatientAssessmentForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [riskResult, setRiskResult] = useState<{score: number, risk: string} | null>(null)
+  const [riskResult, setRiskResult] = useState<{score: number, risk: string, adjustments?: string[], base_probability?: number} | null>(null)
   
   const methods = useForm<FormData>({
     mode: 'onChange',
@@ -950,23 +950,21 @@ const ReviewStep: React.FC = () => {
 }
 
 // Risk Result Display Component
-const RiskResultDisplay: React.FC<{ result: {score: number, risk: string}, onReset: () => void }> = ({ result, onReset }) => {
+const RiskResultDisplay: React.FC<{ result: {score: number, risk: string, adjustments?: string[], base_probability?: number}, onReset: () => void }> = ({ result, onReset }) => {
   const getRiskColor = (risk: string) => {
-    switch (risk.toLowerCase()) {
-      case 'low': return 'text-green-700 bg-green-100 border-green-300'
-      case 'moderate': return 'text-yellow-700 bg-yellow-100 border-yellow-300'
-      case 'high': return 'text-red-700 bg-red-100 border-red-300'
-      default: return 'text-gray-700 bg-gray-100 border-gray-300'
-    }
+    const riskLower = risk.toLowerCase();
+    if (riskLower.includes('low')) return 'text-green-700 bg-green-100 border-green-300'
+    if (riskLower.includes('moderate')) return 'text-yellow-700 bg-yellow-100 border-yellow-300'
+    if (riskLower.includes('high')) return 'text-red-700 bg-red-100 border-red-300'
+    return 'text-gray-700 bg-gray-100 border-gray-300'
   }
 
   const getRiskIcon = (risk: string) => {
-    switch (risk.toLowerCase()) {
-      case 'low': return '✅'
-      case 'moderate': return '⚠️'
-      case 'high': return '🚨'
-      default: return '❓'
-    }
+    const riskLower = risk.toLowerCase();
+    if (riskLower.includes('low')) return '✅'
+    if (riskLower.includes('moderate')) return '⚠️'
+    if (riskLower.includes('high')) return '🚨'
+    return '❓'
   }
 
   return (
@@ -979,16 +977,18 @@ const RiskResultDisplay: React.FC<{ result: {score: number, risk: string}, onRes
         
         <div className="mb-8 p-6 bg-gray-50 rounded-xl">
           <div className="text-7xl font-bold text-blue-600 mb-3">
-            {Math.round(result.score * 100)}%
+            {result.score}/10
           </div>
-          <div className="text-xl text-gray-700 font-medium">Risk Probability</div>
+          <div className="text-xl text-gray-700 font-medium">Risk Score</div>
         </div>
 
         <div className={`inline-flex items-center px-8 py-4 rounded-full text-2xl font-bold border-2 ${getRiskColor(result.risk)}`}>
           <span className="mr-3 text-3xl">{getRiskIcon(result.risk)}</span>
-          {result.risk.toUpperCase()} RISK
+          {result.risk.toUpperCase()}
         </div>
       </div>
+
+
 
       <div className="bg-blue-50 border border-blue-200 p-6 rounded-xl mb-8">
         <h3 className="font-bold text-blue-900 mb-3 text-lg flex items-center">

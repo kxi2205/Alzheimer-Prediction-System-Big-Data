@@ -100,69 +100,112 @@ def preprocess_input(data, feature_names):
             'ADL', 'CognitiveDeclineScore', 'TotalSymptomCount'
         ]
         
-        # Create final dataframe with model features
-        final_df = pd.DataFrame()
+        # Create final dataframe with model features - use actual input values!
+        final_df = pd.DataFrame(index=[0])
+        
+        # Map input data to model features directly
         for feature in model_features:
-            if feature in ['CognitiveDeclineScore', 'TotalSymptomCount']:
-                final_df[feature] = df[feature]
+            if feature == 'CognitiveDeclineScore':
+                final_df[feature] = df['CognitiveDeclineScore'].iloc[0]
+            elif feature == 'TotalSymptomCount':
+                final_df[feature] = df['TotalSymptomCount'].iloc[0]
             elif feature == 'MemoryComplaints':
-                final_df[feature] = 1 if data.get('MemoryComplaints', False) else 0
+                final_df[feature] = float(1 if data.get('MemoryComplaints', False) else 0)
             elif feature == 'BehavioralProblems':
-                final_df[feature] = 1 if data.get('BehavioralProblems', False) else 0
+                final_df[feature] = float(1 if data.get('BehavioralProblems', False) else 0)
             else:
-                # Ensure numeric conversion for all other features
-                value = data.get(feature, 0)
-                try:
-                    final_df[feature] = float(value) if value is not None else 0
-                except (ValueError, TypeError):
-                    final_df[feature] = 0
-        
-        # Handle any missing values with reasonable defaults
-        defaults = {
-            'Age': 65,
-            'BMI': 25,
-            'SleepQuality': 7,
-            'SystolicBP': 120,
-            'DiastolicBP': 80,
-            'CholesterolTotal': 200,
-            'CholesterolHDL': 50,
-            'CholesterolTriglycerides': 150,
-            'FunctionalAssessment': 8,
-            'ADL': 9
-        }
-        
-        for feature in model_features:
-            try:
-                current_value = final_df[feature].iloc[0]
-                # Check if value is missing, NaN, or effectively zero
-                if pd.isna(current_value) or current_value == 0:
-                    if feature in defaults:
-                        final_df[feature] = float(defaults[feature])
-                    elif feature in ['MemoryComplaints', 'BehavioralProblems']:
-                        final_df[feature] = 0.0
+                # Get the actual input value - don't default to 0!
+                if feature in data and data[feature] is not None:
+                    try:
+                        final_df[feature] = float(data[feature])
+                    except (ValueError, TypeError):
+                        # Only use defaults if conversion fails
+                        defaults = {
+                            'Age': 65, 'BMI': 25, 'SleepQuality': 7,
+                            'SystolicBP': 120, 'DiastolicBP': 80,
+                            'CholesterolTotal': 200, 'CholesterolHDL': 50,
+                            'CholesterolTriglycerides': 150, 'FunctionalAssessment': 8, 'ADL': 9
+                        }
+                        final_df[feature] = float(defaults.get(feature, 0))
                 else:
-                    # Ensure the value is properly converted to float
-                    final_df[feature] = float(current_value)
-            except (ValueError, TypeError, IndexError):
-                # Fallback to defaults if conversion fails
-                if feature in defaults:
-                    final_df[feature] = float(defaults[feature])
-                else:
-                    final_df[feature] = 0.0
+                    # Only use defaults if the feature is truly missing from input
+                    defaults = {
+                        'Age': 65, 'BMI': 25, 'SleepQuality': 7,
+                        'SystolicBP': 120, 'DiastolicBP': 80,
+                        'CholesterolTotal': 200, 'CholesterolHDL': 50,
+                        'CholesterolTriglycerides': 150, 'FunctionalAssessment': 8, 'ADL': 9
+                    }
+                    final_df[feature] = float(defaults.get(feature, 0))
         
         return final_df
         
     except Exception as e:
         raise Exception(f"Error preprocessing input: {str(e)}")
 
-def calculate_risk_category(probability):
-    """Convert probability to risk category"""
-    if probability < 0.3:
-        return "Low"
-    elif probability < 0.7:
-        return "Moderate"
+def calculate_risk_score_and_category(probability, patient_data):
+    """Convert probability to 0-10 risk score with clinical adjustments"""
+    # Base score: probability * 10
+    base_score = probability * 10
+    
+    # Clinical adjustments
+    adjustment_score = 0
+    adjustments = []
+    
+    # Age > 75: +0.5 points
+    age = float(patient_data.get('Age', 0))
+    if age > 75:
+        adjustment_score += 0.5
+        adjustments.append("Advanced age (>75 years): +0.5")
+    
+    # MMSE < 24: +1.0 points
+    mmse = float(patient_data.get('MMSE', 30))
+    if mmse < 24:
+        adjustment_score += 1.0
+        adjustments.append("Cognitive impairment (MMSE<24): +1.0")
+    
+    # Family history: +0.5 points
+    if patient_data.get('FamilyHistoryAlzheimers', 0):
+        adjustment_score += 0.5
+        adjustments.append("Family history of Alzheimer's: +0.5")
+    
+    # Multiple cardiovascular risks: +0.5 points
+    cv_risks = [
+        patient_data.get('Hypertension', 0),
+        patient_data.get('Diabetes', 0), 
+        patient_data.get('CardiovascularDisease', 0)
+    ]
+    cv_risk_count = sum(cv_risks)
+    if cv_risk_count >= 2:
+        adjustment_score += 0.5
+        adjustments.append(f"Multiple cardiovascular risks ({cv_risk_count}): +0.5")
+    
+    # High symptom count (>3): +0.5 points
+    symptoms = [
+        patient_data.get('MemoryComplaints', 0),
+        patient_data.get('BehavioralProblems', 0),
+        patient_data.get('Confusion', 0),
+        patient_data.get('Disorientation', 0),
+        patient_data.get('PersonalityChanges', 0),
+        patient_data.get('DifficultyCompletingTasks', 0),
+        patient_data.get('Forgetfulness', 0)
+    ]
+    symptom_count = sum(symptoms)
+    if symptom_count > 3:
+        adjustment_score += 0.5
+        adjustments.append(f"High symptom count ({symptom_count}): +0.5")
+    
+    # Final score (capped at 10)
+    final_score = min(base_score + adjustment_score, 10.0)
+    
+    # Risk categories based on 0-10 scale
+    if final_score <= 3:
+        risk_category = "Low Risk"
+    elif final_score <= 6:
+        risk_category = "Moderate Risk" 
     else:
-        return "High"
+        risk_category = "High Risk"
+    
+    return final_score, risk_category, adjustments
 
 def main():
     try:
@@ -189,14 +232,16 @@ def main():
             prediction = model.predict(processed_data)[0]
             risk_score = float(prediction)
         
-        # Calculate risk category
-        risk_category = calculate_risk_category(risk_score)
+        # Calculate risk score and category using 0-10 scale
+        final_risk_score, risk_category, adjustments = calculate_risk_score_and_category(risk_score, input_data)
         
         # Prepare response
         result = {
-            "score": risk_score,
+            "score": round(final_risk_score, 1),
             "risk": risk_category,
             "model_used": "XGBoost",
+            "base_probability": round(risk_score, 3),
+            "adjustments": adjustments,
             "confidence": "High" if abs(risk_score - 0.5) > 0.3 else "Medium"
         }
         
