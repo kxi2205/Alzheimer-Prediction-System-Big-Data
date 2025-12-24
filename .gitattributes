@@ -1,0 +1,5 @@
+# Ensure model files are tracked properly
+*.pkl binary
+*.joblib binary
+*.h5 binary
+*.pb binary
