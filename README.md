@@ -1,258 +1,58 @@
-# Alzheimer's Detection System
+# Alzheimer's Disease Prediction System
 
-A comprehensive Next.js 14 application for Alzheimer's disease detection using machine learning, featuring a React frontend, Python Flask backend, and complete data science pipeline.
+A professional, full-stack medical assessment application designed to predict the risk of Alzheimer's disease using clinical data and advanced machine learning.
 
-## 🏗️ Project Structure
+## 🚀 Architecture
+- **Frontend**: Next.js 15+ (React 19, Tailwind CSS, TypeScript)
+- **Backend API**: Next.js API Routes (Node.js)
+- **ML Engine**: Python 3.12 (XGBoost, Scikit-learn, Pandas)
+- **Deployment**: Integrated prediction pipeline using the `spawn` process for real-time inference.
 
-```
-alzheimer-prediction-system/
-├── app/                    # Next.js 14 app directory (pages & routing)
-├── components/             # Reusable React components
-├── api/python/            # Python Flask backend for ML inference
-├── models/                # ML model files and saved scalers
-├── notebooks/             # Jupyter notebooks for analysis
-├── data/                  # Dataset and processed data
-├── outputs/               # Generated plots, reports, and results
-├── utils/                 # Helper functions (image processing, API calls)
-├── lib/                   # Database connections and utilities
-├── public/                # Static assets
-├── preprocessed_data/     # Train/validation/test splits
-├── analysis_outputs/      # EDA visualizations and reports
-└── preprocessing_outputs/ # Data preprocessing reports
-```
+## 📋 Features
+- **Modern Assessment Form**: A responsive, 6-step clinical assessment form with validation.
+- **Real-time Prediction**: Instant risk scoring (0-10 scale) powered by an optimized XGBoost model.
+- **Clinical Adjustments**: Rule-based logic that adjusts AI predictions based on critical clinical markers (e.g., family history, memory complaints).
+- **Layman-Friendly Results**: Clear risk categorization (Low/Moderate/High) with interpretation and recommendations.
 
-## 🚀 Features
+## 🛠️ Setup & Installation
 
-### Frontend (Next.js 14)
-- Modern React interface for Alzheimer's detection
-- Image upload and processing capabilities
-- Real-time prediction results
-- Responsive design with Tailwind CSS
+### 1. Prerequisites
+- Node.js (v18+)
+- Python (v3.10+)
 
-### Backend (Python Flask)
-- RESTful API for ML model inference
-- Data preprocessing pipeline
-- Model serving and prediction endpoints
-- CORS-enabled for frontend integration
-
-### Data Science Pipeline
-- **Exploratory Data Analysis**: Comprehensive EDA with visualizations
-- **Advanced Analysis**: Statistical tests and risk factor analysis
-- **Data Preprocessing**: Feature engineering, encoding, and scaling
-- **Model Training**: Support for various ML algorithms
-- **Evaluation**: Performance metrics and validation
-
-### Machine Learning
-- Support for multiple model types (CNN, Random Forest, SVM, etc.)
-- Feature engineering and selection
-- Cross-validation and hyperparameter tuning
-- Model persistence and versioning
-
-## 🛠️ Setup Instructions
-
-### Prerequisites
-- Node.js 18+ and npm
-- Python 3.8+
-- Git
-
-### Frontend Setup
-
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-2. **Run development server:**
-   ```bash
-   npm run dev
-   ```
-
-3. **Build for production:**
-   ```bash
-   npm run build
-   npm start
-   ```
-
-### Backend Setup
-
-1. **Create virtual environment:**
-   ```bash
-   python -m venv .venv
-   .venv\Scripts\activate  # Windows
-   # source .venv/bin/activate  # Linux/Mac
-   ```
-
-2. **Install Python dependencies:**
-   ```bash
-   pip install -r requirements_analysis.txt
-   ```
-
-3. **Start Flask server:**
-   ```bash
-   cd api/python
-   python app.py
-   ```
-
-### Data Science Setup
-
-1. **Place your dataset:**
-   - Add `alzheimer_dataset.csv` to the `/data` folder
-   - Ensure it contains all 35 required columns
-
-2. **Launch Jupyter notebooks:**
-   ```bash
-   jupyter lab notebooks/
-   ```
-
-3. **Start with exploratory analysis:**
-   - Open `notebooks/exploratory_data_analysis.ipynb`
-   - Run all cells to generate comprehensive analysis
-   - Review visualizations and insights
-
-## 📊 Data Analysis Workflow
-
-All data analysis is now conducted through Jupyter notebooks for better interactivity and visualization:
-
-### `notebooks/exploratory_data_analysis.ipynb`
-- Dataset overview and basic statistics
-- Missing values analysis and visualization
-- Target variable distribution analysis
-- Feature correlations and heatmaps
-- Demographic analysis and patterns
-- Interactive visualizations with plotly
-- Comprehensive EDA with statistical insights
-
-### Planned Notebooks:
-- `advanced_analysis.ipynb`: Statistical testing and risk factor analysis
-- `data_preprocessing.ipynb`: Feature engineering and data preparation
-- `model_training.ipynb`: ML model development and evaluation
-- `model_evaluation.ipynb`: Performance analysis and validation
-
-## 🔬 Jupyter Notebooks
-
-### `notebooks/exploratory_data_analysis.ipynb`
-- Interactive data exploration
-- Statistical analysis
-- Visualization with matplotlib, seaborn, and plotly
-- Feature distribution analysis
-- Correlation studies
-
-## 📈 Model Development
-
-### Supported Features (35 columns):
-- **Demographics**: Age, Gender, Ethnicity, EducationLevel
-- **Health Metrics**: BMI, SystolicBP, DiastolicBP, Cholesterol levels
-- **Lifestyle**: Smoking, AlcoholConsumption, PhysicalActivity, DietQuality, SleepQuality
-- **Medical History**: FamilyHistoryAlzheimers, CardiovascularDisease, Diabetes, Depression, etc.
-- **Cognitive Assessment**: MMSE, MemoryComplaints, Confusion, Disorientation, etc.
-- **Target**: Diagnosis (Alzheimer's vs Normal)
-
-### Engineered Features:
-- Age groups (Young/Middle/Elderly)
-- BMI categories (Underweight/Normal/Overweight/Obese)
-- Blood pressure categories (Normal/Elevated/Hypertension)
-- Cholesterol risk score
-- Cognitive decline score
-- Lifestyle risk score
-- Medical history risk score
-
-## 🗃️ Database Integration
-
-The project supports database integration through the `/lib` directory:
-- Database connection utilities
-- Data persistence for predictions
-- User management (future feature)
-
-## 📁 Output Files
-
-### Analysis Outputs (`/outputs/`)
-- Generated from Jupyter notebooks
-- Interactive visualizations and reports
-- Model evaluation results
-- Statistical analysis summaries
-
-### Model Files (`/models/`)
-- `encoders.pkl`: Label and one-hot encoders
-- `scalers.pkl`: StandardScaler and MinMaxScaler
-- `*.pkl`: Trained model files
-- `*.h5`: Deep learning models
-
-### Processed Data (`/preprocessed_data/`)
-- `train_data.csv`: Training dataset (70%)
-- `val_data.csv`: Validation dataset (15%)
-- `test_data.csv`: Test dataset (15%)
-- `feature_names.txt`: List of all features
-
-## 🔧 Environment Variables
-
-Create a `.env.local` file for frontend:
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000
-```
-
-Create a `.env` file for backend:
-```env
-FLASK_ENV=development
-MODEL_PATH=../models/
-```
-
-## 🧪 Testing
-
+### 2. Frontend Setup
 ```bash
-# Frontend tests
-npm test
-
-# Backend tests
-python -m pytest api/python/tests/
+npm install
+npm run dev
 ```
+The application will be available at `http://localhost:3000`.
 
-## 📦 Deployment
-
-### Frontend (Vercel)
+### 3. Backend Setup (Python)
+Install the required machine learning libraries:
 ```bash
-npm run build
+pip install -r requirements.txt
 ```
 
-### Backend (Docker)
-```dockerfile
-# Dockerfile example in api/python/
-FROM python:3.8
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["python", "app.py"]
-```
+## 🧪 Machine Learning Pipeline
+The system uses an optimized XGBoost model as the primary engine, with Random Forest and SVM variants also validated during development.
 
-## 🤝 Contributing
+### Model Performance (Test Set)
+| Model | Accuracy | Precision | Recall | F1 Score | ROC AUC |
+|-------|----------|-----------|--------|----------|---------|
+| **Random Forest** | 94.1% | 91.3% | 92.1% | 91.7% | 0.9505 |
+| **SVM (RBF)** | 83.9% | 75.8% | 79.8% | 77.8% | 0.9033 |
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+- **Preprocessing**: Includes missing-value imputation (median/mode), categorical encoding, and feature scaling.
+- **Training Data**: Located in `data/alzheimer_dataset.csv`.
+- **Primary Model**: Saved in `outputs/models/xgboost_model.pkl`.
 
-## 📝 License
+## 📁 Repository Structure
+- `app/`: Next.js application routes and API logic.
+- `components/`: Reusable React components (Assessment form, Result displays).
+- `api/python/`: Core Python prediction scripts and model integration.
+- `outputs/`: Model artifacts, configurations, and evaluation results.
+- `scripts/`: Production-grade Python scripts for preprocessing and training.
+- `notebooks/`: Jupyter notebooks for research and development.
 
-This project is licensed under the MIT License.
-
-## 📞 Support
-
-For questions or issues:
-- Open an issue on GitHub
-- Check the documentation in `/notebooks/`
-- Review analysis reports in `/outputs/`
-
-## 🔬 Research Context
-
-This system is designed for research purposes in Alzheimer's disease detection. The model incorporates:
-- Demographic factors
-- Lifestyle assessments
-- Medical history
-- Cognitive evaluations
-- Biomarker data
-
-**Note**: This tool is for research purposes only and should not be used as a substitute for professional medical diagnosis.
-
----
-
-Built with ❤️ using Next.js 14, Python, and Machine Learning
+## ⚖️ Disclaimer
+*This system is a clinical decision support tool and should not replace professional medical judgment. All assessments should be reviewed by qualified healthcare providers.*
